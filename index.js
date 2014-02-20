@@ -11,7 +11,7 @@ var BenchReporter = function(baseReporterDecorator) {
 
       for (var groupName in groups) {
         var results = groups[groupName]
-        if (results.length) {
+        if (results.length > 1) {
           // Find the fastest among the groups
           results.sort(function(a, b) {
             return b.benchmark.hz - a.benchmark.hz;
