@@ -3,8 +3,16 @@ var BenchReporter = function(baseReporterDecorator) {
 
   var resultSet = {};
 
-  this.onRunComplete = function(browsers, resultInfo) {
-    for (var browserName in resultSet) {
+  this.onRunStart = function(browsers) {
+    resultSet = {};
+  };
+
+  this.onBrowserStart = function(browser) {
+    resultSet[browser.name] = {};
+  };
+
+  this.onBrowserComplete = function(browser) {
+      var browserName = browser.name;
       var groups = resultSet[browserName];
 
       this.write(browserName+'\n');
@@ -27,10 +35,14 @@ var BenchReporter = function(baseReporterDecorator) {
           this.write('  '+results[0].description+' had no peers for comparison at '+Math.floor(results[0].benchmark.hz)+' ops/sec\n')
         }
       }
-    }
   };
 
   this.specSuccess = function(browser, result) {
+    if (!result.benchmark) {
+      // do nothing - assume this result did not come from benchmark framework
+      return;
+    }
+
     var browser = browser.name;
     var suite = result.benchmark.suite;
     var name = result.benchmark.name;
